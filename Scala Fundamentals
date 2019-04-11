@@ -39,5 +39,89 @@ scala> i = "Hello"
        i = "Hello"
        
        
+       
+++++++++++++++++++++++++++++++ 2.0 String Manipulation ++++++++++++++++++++++++++++++
+*/ String functions can be identified by pressing 'tab' key on any string variable. /*
+
+Example 2.1
+
+scala> var element_str = "Hello World"
+element_str: String = Hello World
+scala> element_str.    //press 'tab' key to display all the functions on string variable
+
+*                     groupBy               scanLeft        
++                     grouped               scanRight       
+++                    hasDefiniteSize       segmentLength   
+++:                   hashCode              self            
++:                    head                  seq             
+/:                    headOption            size            
+:+                    indexOf               slice           
+:\                    indexOfSlice          sliding         
+<                     indexWhere            sortBy          
+<=                    indices               sortWith        
+>                     init                  sorted          
+>=                    inits                 span            
+addString             intern                split           
+aggregate             intersect             splitAt         
+andThen               isDefinedAt           startsWith      
+apply                 isEmpty               stringPrefix    
+applyOrElse           isTraversableAgain    stripLineEnd    
+canEqual              iterator              stripMargin     
+capitalize            last                  stripPrefix     
+charAt                lastIndexOf           stripSuffix    
 
 
+Example 2.2
+
+scala> element_str.sub    // press 'tab' to get the functions that start with 'sub'
+subSequence   substring
+scala> element_str.substring // press 'tab' to get the function definitions of substring
+   def substring(x$1: Int,x$2: Int): String   def substring(x$1: Int): String
+scala> element_str.substring
+
+
+++++++++++++++++++++++++++++++ 3.0 For Loop ++++++++++++++++++++++++++++++
+
+3.1 Example 
+scala> for (i <- (1 to 10)) println(i)
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+3.2 Example
+//Sum of numbers
+var totalValue = 0
+for( i <- (1 to 100)) {
+  totalValue += i
+}
+totalValue: Int = 5050
+
+
+
+++++++++++++++++++++++++++++++ 4.0 While Loop & IF Condition ++++++++++++++++++++++++++++++
+
+4.1 Example
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+//Sum of even and odd values
+var upperBound = 100
+var lowerBound = 1
+var totalEven = 0
+var totalOdd = 0
+while(lowerBound <= upperBound) {
+  if(lowerBound % 2 == 0) totalEven += lowerBound else totalOdd += lowerBound
+  lowerBound += 1
+}
+// Exiting paste mode, now interpreting.
+upperBound: Int = 100
+lowerBound: Int = 101
+totalEven: Int = 2550
+totalOdd: Int = 2500

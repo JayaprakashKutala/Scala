@@ -1,0 +1,42 @@
+*/
+Basic Scala Fundamentals for Big Data
+/*
+
+++++++++++++++++++++++++++++++ 1.0 VAL vs VAR ++++++++++++++++++++++++++++++
+*/
+val vs var
+val -- inmutable (fixed & we can't assign any new values)
+var -- mutable (we can assign new values but with similar data type)
+Below is the examples:
+*/
+
+(1) Example 1 : Check whether can we assign value to inmutable 'val' function
+Result: Error(We can't change the value.)
+
+scala> val i = 0
+i: Int = 0
+scala> i = 100
+<console>:25: error: reassignment to val  // Because we change val 
+       i = 100
+       
+(2) Example 2: Check whether can we assign value to mutable 'var'
+Result: Yes, we can but only similar data type.
+
+scala> var i = 10
+i: Int = 10
+scala> i = 100
+i: Int = 100
+
+(3) Example 3: Check whether can we assign different data type to 'var'
+Result: ERROR (No, we can not assign different data type.)
+
+scala>  var i = 10
+i: Int = 10
+scala> i = "Hello"
+<console>:25: error: type mismatch;
+ found   : String("Hello")
+ required: Int
+       i = "Hello"
+       
+
+

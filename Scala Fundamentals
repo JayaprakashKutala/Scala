@@ -125,4 +125,3 @@ upperBound: Int = 100
 lowerBound: Int = 101
 totalEven: Int = 2550
 totalOdd: Int = 2500
-

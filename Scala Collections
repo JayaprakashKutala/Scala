@@ -1,0 +1,118 @@
+*/
+Scala major Collections for Big Data
+1.Array
+2.List
+3.Set
+4.Map
+/*
+
+++++++++++++++++++++++++++++++ 1.0 Collections Definition & Declarations ++++++++++++++++++++++++++++++
+1. Definitions
+scala> Array  
+res0: Array.type = scala.Array$@6caffb24
+
+scala> List
+res1: scala.collection.immutable.List.type = scala.collection.immutable.List$@5426c89f
+
+scala> Set
+res2: scala.collection.immutable.Set.type = scala.collection.immutable.Set$@2fc7698c
+
+scala> Map
+res3: scala.collection.immutable.Map.type = scala.collection.immutable.Map$@24af33a1
+
+2. Declarations
+//Array
+scala> var Elements_Array = Array(1,2,3,4,5)
+Elements_Array: Array[Int] = Array(1, 2, 3, 4, 5)
+
+scala> //List
+scala> var Elements_List = List(1,1,3,4,5)
+Elements_List: List[Int] = List(1, 1, 3, 4, 5)
+
+scala> //Set -- unique elements ignores duplicate elements
+scala> var Elements_set = Set(1,1,3,4,5)
+Elements_set: scala.collection.immutable.Set[Int] = Set(1, 3, 4, 5)
+
+scala> //Map -- Key & Value Pairs
+scala> var Elements_map = Map("Hello" -> 1, "World" -> 2)
+Elements_map: scala.collection.immutable.Map[String,Int] = Map(Hello -> 1, World -> 2)
+
+
+++++++++++++++++++++++++++++++ 2.0 Collections Iteration ++++++++++++++++++++++++++++++
+//Array
+scala> Elements_Array.foreach(println)
+1
+2
+3
+4
+5
+
+//List
+scala> Elements_List.foreach(println)
+1
+1
+3
+4
+5
+
+//Set
+scala> Elements_set.foreach(println)
+1
+3
+4
+5
+
+//Map
+scala> Elements_map.foreach(println)
+(Hello,1)
+(World,2)
+
+
+++++++++++++++++++++++++++++++ 3.0 Collections Functions ++++++++++++++++++++++++++++++
+// Array Functions
+scala> Elements_Array.   \\ press 'tab' key to list all functions associated with Array variable
+!=              eq                   lift                sorted          
+##              equals               map                 span            
++               exists               max                 splitAt         
+++              filter               maxBy               startsWith      
+++:             filterNot            min                 stringPrefix    
++:              find                 minBy               sum             
+->              flatMap              mkString            synchronized    
+/:              flatten              ne                  tail            
+:+              fold                 nonEmpty            tails           
+:\              foldLeft             notify              take            
+==              foldRight            notifyAll           takeRight   
+
+// List Functions
+scala> Elements_List.    \\ press 'tab' key to list all functions associated with List variable
+++              flatMap              minBy               sorted          
+++:             flatten              mkString            span            
++:              fold                 nonEmpty            splitAt         
+/:              foldLeft             orElse              startsWith      
+:+              foldRight            padTo               stringPrefix    
+::              forall               par                 sum             
+:::             foreach              partition           tail            
+:\              genericBuilder       patch               tails     
+
+// Set Functions
+scala> Elements_set.      \\ press 'tab' key to list all functions associated with Set variable
+&              exists               min                 tails           
+&~             filter               minBy               take            
++              filterNot            mkString            takeRight       
+++             find                 nonEmpty            takeWhile       
+++:            flatMap              par                 to              
+-              flatten              partition           toArray         
+--             fold                 product             toBuffer        
+/:             foldLeft             reduce              toIndexedSeq    
+:\             foldRight            reduceLeft          toIterable   
+
+// Map Functions
+scala> Elements_map.      \\ press 'tab' key to list all functions associated with Map variable
++              find                 maxBy               takeRight          
+++             flatMap              min                 takeWhile          
+++:            flatten              minBy               to                 
+-              fold                 mkString            toArray            
+--             foldLeft             nonEmpty            toBuffer           
+/:             foldRight            orElse              toIndexedSeq       
+:\             forall               par                 toIterable  
+

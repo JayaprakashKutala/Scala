@@ -115,4 +115,3 @@ scala> Elements_map.      \\ press 'tab' key to list all functions associated wi
 --             foldLeft             nonEmpty            toBuffer           
 /:             foldRight            orElse              toIndexedSeq       
 :\             forall               par                 toIterable  
-

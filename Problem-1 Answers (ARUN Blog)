@@ -1,0 +1,115 @@
+#1 
+sqoop eval \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --query "SELECT count(*) FROM orders LIMIT 10"
+
+ count: 68883
+
+sqoop import \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --table orders \
+ --delete-target-dir \
+ --target-dir /user/oathbreaker89/Arun1/problem1/orders \
+ --autoreset-to-one-mapper \
+ --as-avrodatafile \
+ --compress \
+ --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+ hadoop fs -ls /user/oathbreaker89/Arun1/problem1/orders
+
+ #2
+sqoop eval \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --query "SELECT * FROM order_items LIMIT 10"
+
+sqoop import \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --table order_items \
+ --delete-target-dir \
+ --target-dir /user/oathbreaker89/Arun1/problem1/order-items \
+ --autoreset-to-one-mapper \
+ --as-avrodatafile \
+ --compress \
+ --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+
+spark-shell \
+--master yarn \
+--packages com.databricks:spark-avro_2.10:2.0.1
+
+import com.databricks.spark.avro._
+
+var ordDF = sqlContext.read.avro("/user/oathbreaker89/Arun1/problem1/orders")
+
+ordDF.show()
+
+var oIDF = sqlContext.read.avro("/user/oathbreaker89/Arun1/problem1/order-items")
+oIDF.show()
+
+
+var joinDF = ordDF.join(oIDF,ordDF("order_id") === oIDF("order_item_order_id"))
+joinDF_Filter.show()
+
+
+joinDF.registerTempTable("table")
+var finalDF = sqlContext.sql("SELECT TO_DATE(FROM_UNIXTIME(order_date/1000)) as formatted_date,order_status,count(DISTINCT(order_id)) as total_orders,ROUND(sum(order_item_subtotal),2) as total_amount FROM table GROUP BY TO_DATE(FROM_UNIXTIME(order_date/1000)),order_status ORDER BY formatted_date DESC, order_status,total_amount DESC, total_orders")  
+
+
+sqlContext.setConf("spark.sql.parquet.compression.codec","Snappy")
+
+finalDF.write.parquet("/user/oathbreaker89/Arun1/problem1/result4a-snappy")
+
+hadoop fs -ls /user/oathbreaker89/Arun1/problem1/result4a-snappy
+
+sqlContext.setConf("spark.sql.parquet.compression.codec", "Gzip")
+finalDF.write.parquet("/user/oathbreaker89/Arun1/problem1/result4b-Gzip")
+
+sqlContext.setConf("spark.sql.avro.compression.codec", "Gzip")
+finalDF.write.avro("/user/oathbreaker89/Arun1/problem1/result4c-avro-Gzip")
+
+
+finalDF.write.format("com.databricks.spark.avro").save("/user/oathbreaker89/Arun1/problem1/result4c-avro-Gzip")
+
+finalDF.rdd.map(x => x.mkString("|")).saveAsTextFile("/user/oathbreaker89/Arun1/problem1/result4c-text-pipe")
+hadoop fs -ls /user/oathbreaker89/Arun1/problem1/result4c-text
+
+finalDF.rdd.map(x => x.mkString(",")).saveAsTextFile("/user/oathbreaker89/Arun1/problem1/result4c-text-gzip",classOf[org.apache.hadoop.io.compress.GzipCodec])
+hadoop fs -ls /user/oathbreaker89/Arun1/problem1/result4c-text-gzip
+
+finalDF.toJSON.saveAsTextFile("/user/oathbreaker89/Arun1/problem1/result4d-JSON")
+hadoop fs -ls /user/oathbreaker89/Arun1/problem1/result4d-JSON
+
+finalDF.toJSON.saveAsTextFile("/user/oathbreaker89/Arun1/problem1/result4d-JSON-snappy",classOf[org.apache.hadoop.io.compress.SnappyCodec])
+
+oIDF.write.format("com.databricks.spark.avro").save("/user/oathbreaker89/Arun1/problem1/result4c-avro-Gzip")
+formatted_date|order_status|total_orders|total_amount
+
+
+mysql -h ms.itversity.com -u retail_user -p itversity
+
+create table result_arun1_JP(order_date varchar(255) not null,order_status varchar(255) not null, total_orders int, total_amount numeric, constraint pk_order_result primary key (order_date,order_status));
+
+hadoop fs -ls /user/oathbreaker89/Arun1/problem1/result4c-text-pipe
+
+
+sqoop export \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_export \
+ --username retail_user \
+ --password itversity \
+ --table result_arun1_JP \
+ --export-dir /user/oathbreaker89/Arun1/problem1/result4c-text-pipe \
+ --input-fields-terminated-by "|"
+
+sqoop eval \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_export \
+ --username retail_user \
+ --password itversity \
+ --query "SELECT * FROM result_arun1_JP LIMIT 10"

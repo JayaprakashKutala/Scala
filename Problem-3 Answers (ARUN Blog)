@@ -1,0 +1,27 @@
+sqoop import-all-tables \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --warehouse-dir /user/hive/warehouse/oathbreaker_retail.db \
+ --autoreset-to-one-mapper \
+ --as-avrodatafile \
+ --compress \
+ --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+hadoop fs -get /user/hive/warehouse/oathbreaker_retail.db/orders/part-m-00000.avro /home/oathbreaker89/orders-schema
+hadoop fs -mkdir /user/hive/warehouse/oathbreaker_retail.db/orders_Schema
+hadoop fs -put /home/oathbreaker89/orders-schema/orders.avsc /user/hive/warehouse/oathbreaker_retail.db/orders_Schema/
+hadoop fs -ls /user/hive/warehouse/oathbreaker_retail.db/orders_Schema/
+
+
+hive
+use oathbreaker89_sqoop_import;
+create table orders_arun3 
+stored as avro
+location '/user/hive/warehouse/oathbreaker_retail.db/orders'
+TBLPROPERTIES("avro.schema.url" = '/user/hive/warehouse/oathbreaker_retail.db/orders_Schema/orders.avsc');
+
+SELECT FROM_UNIXTIME(ROUND(order_date/1000,0)) FROM orders_arun3 LIMIT 10;
+
+
+

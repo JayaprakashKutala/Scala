@@ -1,0 +1,50 @@
+#1 
+sqoop eval \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --query "SELECT count(*) FROM products LIMIT 10"
+
+columns:  product_id  | product_category_id | product_name | product_description  | product_price | product_image
+
+1345
+
+sqoop import \
+ --connect jdbc:mysql://ms.itversity.com:3306/retail_db \
+ --username retail_user \
+ --password itversity \
+ --table products \
+ --delete-target-dir \
+ --target-dir /user/oathbreaker89/Arun2/problem1/input \
+ --autoreset-to-one-mapper \
+ --fields-terminated-by "|"
+
+hadoop fs -ls /user/oathbreaker89/Arun2/problem1/input
+hadoop fs -tail /user/oathbreaker89/Arun2/problem1/input/part-m-00000
+
+hadoop fs -mv /user/oathbreaker89/Arun2/problem1/input/ /user/oathbreaker89/Arun2/problem2/input
+hadoop fs -mkdir /user/oathbreaker89/Arun2/problem2/input
+hadoop fs -mkdir /user/oathbreaker89/Arun2/problem2
+
+hadoop fs -ls /user/oathbreaker89/Arun2/problem2/input
+
+#4
+spark-shell \
+--master yarn \
+--packages com.databricks:spark-avro_2.10:2.0.1
+
+import com.databricks.spark.avro._
+
+case class prod(product_id:Int,product_category_id:Int,product_name:String,product_price:Float)
+var prodDF = sc.textFile("/user/oathbreaker89/Arun2/problem2/input").map(x => x.split('|')).map(x => prod(x(0).toInt,x(1).toInt,x(2).toString,x(4).toFloat)).toDF()
+
+var step1 = prodDF.orderBy("product_category_id")
+var step2 = step1.filter (step1("product_price") < 100)
+
+step2.registerTempTable("table")
+var finalStep = sqlContext.sql("SELECT product_category_id,MAX(product_price) as high_value,COUNT(DISTINCT(product_id)) as product_count,ROUND(AVG(product_price),2) as average_price,MIN(product_price) as lowest_price FROM table GROUP BY product_category_id ORDER BY product_category_id")
+
+sqlContext.setConf("spark.sql.avro.compression.codec","Snappy")
+finalStep.write.avro("/user/oathbreaker89/Arun2/problem5/output")
+
+hadoop fs -ls /user/oathbreaker89/Arun2/problem5/output
